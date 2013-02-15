@@ -1,0 +1,19 @@
+LINKS V0.000
+
+When you add links to this page, they will be stored as parameters in the url.
+By copying the url and shorten it using a "link shortener",
+you can connect as many webpages together you want.
+This is a convenient way of sending a bunch of links from one computer to another.
+
+HOW DOES A LINK SHORTENER WORKS?
+
+A link shortener is a web service that stores links and creates a hash key.
+If you have used Twitter, you are probably familiar with how it works.
+
+When you click on a shortened link, you use the web service to get back your address.
+There is no guarantee that the link shorteners will hash your links forever.
+They can also redirect you to another site.
+If you do not trust other link shorteners, you can make your own.
+
+Because of this, it is not recommended to store sensitive or important data.
+
