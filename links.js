@@ -63,6 +63,7 @@ function onLoad() {
 	var output = "";
 	for (var i = 0; i < n; i++) {
 		var title = vals[2*i];
+		title = escape(title);
 		var url = vals[2*i+1];
 		url = encodeURI(url);
 		output += "<a href=\"" + url + "\" target=\"_blank\">" +
