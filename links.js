@@ -30,6 +30,17 @@
  either expressed or implied, of the FreeBSD Project.
  */
 
+var quotes = [
+"Tip: Use a 'link shortener' to link to a 'Previous' list",
+"Good titles are easier to remember",
+"<--- The manual, is there",
+"Be moderate: 4-5 links per list is enough",
+"2000 characters is the maximum limit of a web address in most browsers",
+"Like it? I love flattr-ing --->",
+"One page to link them all",
+"Stuck? You should read more in the 'manual'"
+];
+
 var data = [];
 
 function htmlEncode(s)
@@ -55,6 +66,10 @@ function addLink() {
 }
 
 function onLoad() {
+	var quote = document.getElementById("quote");
+	var rnd = Math.floor(Math.random() * quotes.length);
+	quote.textContent = "\"" + quotes[rnd % quotes.length] + "\"";
+	
 	var str = window.location.search;
 	if (str.length == 0 || str.indexOf("?data") != 0) {
 		return;

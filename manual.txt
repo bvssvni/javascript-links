@@ -4,6 +4,17 @@ When you add links to this page, they will be stored as parameters in the url.
 By copying the url and shorten it using a "link shortener",
 you can connect as many webpages together you want.
 This is a convenient way of sending a bunch of links from one computer to another.
+If you have trouble finding a link shortener, just google 'link shortener'.
+
+The maximum characters of an url in most browsers is 2000.
+The recommended number of links per list is 4-5.
+
+LINKCEPTION
+
+You can use a link shortener to link back to a list of links.
+This way, you can build lists or trees that stores all your links under one.
+You can also link back to Javascript apps that reads and stores to urls.
+All the data is stored in the links themselves, the apps are just ways of viewing data.
 
 HOW DOES A LINK SHORTENER WORKS?
 
