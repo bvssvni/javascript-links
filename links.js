@@ -32,6 +32,12 @@
 
 var data = [];
 
+function htmlEncode(s)
+{
+	return s.replace(/&(?!\w+([;\s]|$))/g, "&amp;")
+	.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
 function updateUrl() {
 	var str = "";
 	for (var i = 0; i < data.length; i++) {
@@ -63,7 +69,7 @@ function onLoad() {
 	var output = "";
 	for (var i = 0; i < n; i++) {
 		var title = vals[2*i];
-		title = escape(title);
+		title = htmlEncode(title);
 		var url = vals[2*i+1];
 		url = encodeURI(url);
 		output += "<a href=\"" + url + "\" target=\"_blank\">" +
