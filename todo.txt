@@ -2,8 +2,14 @@
 + Completed on later day.
 - Decided against on later day.
 
+17.02.2013
+
+*Replace ',' with ''.
+
 15.02.2013
 
+Example
+*Cutout Pro link.
 *Linkception in the manual.
 *Limit of characters in the manual.
 *Add quotes.

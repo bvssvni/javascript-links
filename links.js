@@ -58,9 +58,10 @@ function updateUrl() {
 }
 
 function addLink() {
-	var url = document.getElementById("url");
-	var title = document.getElementById("title");
-	data.push([title.value, url.value]);
+	var url = document.getElementById("url").value;
+	var title = document.getElementById("title").value;
+	title = title.replace(/\,/g, "");
+	data.push([title, url]);
 	
 	updateUrl();
 }
