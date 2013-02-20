@@ -38,7 +38,8 @@ var quotes = [
 "2000 characters is the maximum limit of a web address in most browsers",
 "Like it? I love flattr-ing --->",
 "One page to link them all",
-"Stuck? You should read more in the 'manual'"
+"Stuck? Read more in the 'manual'",
+"Welcome to the world of linkception."
 ];
 
 var data = [];
