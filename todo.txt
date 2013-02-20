@@ -4,6 +4,7 @@
 
 20.02.2013
 
+*Link to Pxl.
 *Added privacy note on sensitive data to manual.
 
 17.02.2013
