@@ -9,6 +9,10 @@ If you have trouble finding a link shortener, just google 'link shortener'.
 The maximum characters of an url in most browsers is 2000.
 The recommended number of links per list is 4-5.
 
+PRIVACY
+
+It is not safe to store links to sensitive data using link shorteners.
+
 LINKCEPTION
 
 You can use a link shortener to link back to a list of links.
