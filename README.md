@@ -1,4 +1,5 @@
 javascript-links
 ================
 
-A page for storing urls in urls.
+A page for storing urls in urls.  
+LGPL license.  
