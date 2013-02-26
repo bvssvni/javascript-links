@@ -1,33 +1,12 @@
-/*
- links.js - Storing urls in urls.
- BSD license.
- by Sven Nilsen, 2012
- http://www.cutoutpro.com
- Version: 0.000 in angular degrees version notation
- http://isprogrammingeasy.blogspot.no/2012/08/angular-degrees-versioning-notation.html
- */
+"use strict";
 
 /*
- Redistribution and use in source and binary forms, with or without
- modification, are permitted provided that the following conditions are met:
- 1. Redistributions of source code must retain the above copyright notice, this
- list of conditions and the following disclaimer.
- 2. Redistributions in binary form must reproduce the above copyright notice,
- this list of conditions and the following disclaimer in the documentation
- and/or other materials provided with the distribution.
- THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
- ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
- WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
- DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
- ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
- (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
- LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
- ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
- (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
- SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- The views and conclusions contained in the software and documentation are those
- of the authors and should not be interpreted as representing official policies,
- either expressed or implied, of the FreeBSD Project.
+ links.js - Storing urls in urls.
+ LGPL license: http://www.gnu.org/copyleft/lesser.html
+ by Sven Nilsen, 2013
+ http://www.cutoutpro.com
+ Version: 0.001 in angular degrees version notation
+ http://isprogrammingeasy.blogspot.no/2012/08/angular-degrees-versioning-notation.html
  */
 
 var quotes = [
@@ -44,6 +23,59 @@ var quotes = [
 
 var data = [];
 
+// LZW-compress a string
+function lzw_encode(s) {
+    var dict = {};
+    var data = (s + "").split("");
+    var out = [];
+    var currChar;
+    var phrase = data[0];
+    var code = 256;
+    for (var i=1; i<data.length; i++) {
+        currChar=data[i];
+        if (dict[phrase + currChar] != null) {
+            phrase += currChar;
+        }
+        else {
+            out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
+            dict[phrase + currChar] = code;
+            code++;
+            phrase=currChar;
+        }
+    }
+    out.push(phrase.length > 1 ? dict[phrase] : phrase.charCodeAt(0));
+    for (var i=0; i<out.length; i++) {
+        out[i] = String.fromCharCode(out[i]);
+    }
+    return out.join("");
+}
+
+// Decompress an LZW-encoded string
+function lzw_decode(s) {
+    var dict = {};
+    var data = (s + "").split("");
+    var currChar = data[0];
+    var oldPhrase = currChar;
+    var out = [currChar];
+    var code = 256;
+    var phrase;
+    for (var i=1; i<data.length; i++) {
+        var currCode = data[i].charCodeAt(0);
+        if (currCode < 256) {
+            phrase = data[i];
+        }
+        else {
+			phrase = dict[currCode] ? dict[currCode] : (oldPhrase + currChar);
+        }
+        out.push(phrase);
+        currChar = phrase.charAt(0);
+        dict[code] = oldPhrase + currChar;
+        code++;
+        oldPhrase = phrase;
+    }
+    return out.join("");
+}
+
 function htmlEncode(s)
 {
 	return s.replace(/&(?!\w+([;\s]|$))/g, "&amp;")
@@ -52,10 +84,17 @@ function htmlEncode(s)
 
 function updateUrl() {
 	var str = "";
-	for (var i = 0; i < data.length; i++) {
-		str += data[i][0] + "," + data[i][1] + ",";
+	if (data.length == 0) {
+		window.location.href = "?";
+		return;
 	}
-	window.location.href = "?data=" + encodeURIComponent(str);
+	
+	for (var i = 0; i < data.length; i++) {
+		str += encodeURIComponent(data[i][0]) + "," + encodeURIComponent(data[i][1]) + ",";
+	}
+	
+	str = lzw_encode(str);
+	window.location.href = "?data2=" + encodeURIComponent(str);
 }
 
 function addLink() {
@@ -67,16 +106,10 @@ function addLink() {
 	updateUrl();
 }
 
-function onLoad() {
-	var quote = document.getElementById("quote");
-	var rnd = Math.floor(Math.random() * quotes.length);
-	quote.textContent = "\"" + quotes[rnd % quotes.length] + "\"";
-	
-	var str = window.location.search;
-	if (str.length == 0 || str.indexOf("?data") != 0) {
-		return;
-	}
-	
+// First format.
+// Got trouble with commas in url.
+// Supported for backward compability.
+function readDataFormat(str) {
 	str = decodeURIComponent(str);
 	
 	var valStr = str.substring(str.indexOf("=")+1);
@@ -95,6 +128,49 @@ function onLoad() {
 	}
 	
 	links.innerHTML = output;
+}
+
+// Second format.
+// Compressed and supports commas in url.
+function readData2Format(str) {
+	str = decodeURIComponent(str);
+	
+	var valStr = str.substring(str.indexOf("=")+1);
+	valStr = lzw_decode(valStr);
+	var vals = valStr.split(",");
+	var links = document.getElementById("links");
+	var n = Math.floor(vals.length / 2);
+	var output = "";
+	for (var i = 0; i < n; i++) {
+		var title = decodeURIComponent(vals[2*i]);
+		title = htmlEncode(title);
+		var url = decodeURIComponent(vals[2*i+1]);
+		url = encodeURI(url);
+		output += "<a href=\"" + url + "\" target=\"_blank\">" +
+		title + "</a><br />";
+		data.push([title, url]);
+	}
+	
+	links.innerHTML = output;
+}
+
+function onLoad() {
+	var quote = document.getElementById("quote");
+	var rnd = Math.floor(Math.random() * quotes.length);
+	quote.textContent = "\"" + quotes[rnd % quotes.length] + "\"";
+	
+	var compressed = false;
+	var str = window.location.search;
+	var lengthZero = str.length == 0;
+	var dataFormat = !lengthZero && str.indexOf("?data=") == 0;
+	var data2Format = !lengthZero && str.indexOf("?data2=") == 0;
+	var hasData = dataFormat || data2Format;
+	if (!hasData) {
+		return;
+	}
+	
+	if (dataFormat) readDataFormat(str);
+	if (data2Format) readData2Format(str);
 }
 
 function onClear() {

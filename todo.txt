@@ -2,6 +2,13 @@
 + Completed on later day.
 - Decided against on later day.
 
+26.02.2013
+
+*Change licence to LGPL.
+*Bug when inserting link with commas.
+*Add compression.
+*Set title.
+
 20.02.2013
 
 *Link to Pxl.
